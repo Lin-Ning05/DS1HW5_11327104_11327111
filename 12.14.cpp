@@ -1,17 +1,7 @@
-//一些簡單的東西和框架
-//很多都不完整簡單寫一下而已
-//都要修
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
-
-void PrintMenu();
-std::string RemoveSpace(std::string target);
-bool IsInt(std::string num);
-bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data);
-bool Getrange(int &range);
 
 struct Pokemon {
     int id;
@@ -34,6 +24,14 @@ struct Node {
     Node* right;
 };
 
+//-------------------宣告-------------------//
+void PrintMenu();
+std::string RemoveSpace(std::string target);
+bool IsInt(std::string num);
+bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data);
+bool Getrange(int &range);
+//-------------------宣告-------------------//
+
 class Tree {
   private:
     //datd
@@ -55,9 +53,12 @@ class Tree {
     int GetHeight() {
       return CountHeight(root);
     }
+    Node *GetRoot() {
+        return root;
+    }
     void Insert(Data data);
     bool DeleteNode();
-    int RangeSearch(int low , int high , std::vector<int> visitedID);
+    void RangeSearch(Node* node , int low , int high , std::vector<std::pair<int,int>> &result , int &visited);
 };
 
 int main() {
@@ -66,7 +67,6 @@ int main() {
     //(我在想可以寫一個function要用的時候從這裡搜尋資料在印出來)
     Tree tree;
     std::string verb;
-    std::string file;
     while(true) {
         PrintMenu();
         
@@ -83,7 +83,9 @@ int main() {
             if (num == "0") continue;
             std::string filename = "input" + num + ".txt";
             while (!LoadFromFile(filename , data)) {
+                std::cout << "Input a file number [0: quit]: \n";  
                 std::cin >> num;
+                num = RemoveSpace(num);
                 if (num == "0") continue;
                 std::string filename = "input" + num + ".txt";
             }
@@ -98,9 +100,10 @@ int main() {
                 std::swap(low , high);
             }
 
-            std::vector<int> visitedID;
-            int searched = tree.RangeSearch(low , high , visitedID);
-            if (visitedID.size() == 0) {
+            std::vector<std::pair<int,int>> result;
+            int searched = 0;
+            tree.RangeSearch(tree.GetRoot() , low , high , result , searched);
+            if (result.size() == 0) {
                 std::cout << "No record was found in the specified range.\n";
             } else {
                 //印visitedID的內容
@@ -204,6 +207,7 @@ bool Getrange(int &range) {
         return false;
     }
 }
+
 //------------------------------Tree-----------------------------//
 
 void Tree::Cleer(Node *node) {
@@ -306,7 +310,24 @@ bool Tree::DeleteNode() {
     }
 }
 
-int Tree::RangeSearch(int low , int high , std::vector<int> visitedID) {
+void Tree::RangeSearch(Node* node , int low , int high , std::vector<std::pair<int,int>>& result , int& visited) {
+    if (!node) return;
+    visited++;
 
+    if (node->data.hp > low) {
+        RangeSearch(node->left, low, high, result, visited);
+    }
+
+    if (node->data.hp >= low && node->data.hp <= high) {
+        for (int i = 0 ; i < node->data.id.size() ; i++) {
+            int id = node->data.id[i];
+            result.push_back({node->data.hp, id});
+        }
+    }
+
+    if (node->data.hp < high) {
+        RangeSearch(node->right, low, high, result, visited);
+    }
+    return;
 }
 
