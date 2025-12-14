@@ -281,21 +281,29 @@ bool Tree::deleteMin() {
     }
     //std::cout << cur的資料
     //沒想好 
-    pre->left = cur->right;
+    if (cur == pre) {
+        root = root->right;
+    } else {
+        pre->left = cur->right;
+    }
     delete cur;
     return true;
 }
 
 bool Tree::deleteMax() {
     if (!root) return false;
-    Node *cur = root , *pre = nullptr;
+    Node *cur = root , *pre = root;
     while (cur->right) {
         pre = cur;
         cur = cur->right;
     }
     //std::cout << cur的資料
     //沒想好 
-    pre->right = cur->left;
+    if (cur == pre) {
+        root = root->left;
+    } else {
+        pre->right = cur->left;
+    }
     delete cur;
     return true;
 }
