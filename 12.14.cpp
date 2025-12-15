@@ -120,7 +120,7 @@ int main() {
             std::cout << "Number of visited nodes = " << searched << std::endl;
         } else if (verb == "3") {
             if (!tree.DeleteNode()) {
-                std::cout << "";//執行任務一，忘了
+                std::cout << "----- Execute Mission 1 first! -----\n";//執行任務一，忘了
             }
         } else if (verb == "4") {
             
