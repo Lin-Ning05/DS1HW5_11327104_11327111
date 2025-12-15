@@ -22,6 +22,10 @@ struct Pokemon {
 struct Data {
     int hp;
     std::vector<int> id;
+    Data(int hp , int id) {
+        this->hp = hp;
+        this->id.push_back(id);
+    }
 };
 
 struct Node {
@@ -165,65 +169,6 @@ std::string RemoveSpace(std::string target) {
 return to_return;
 }
 
-bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
-    std::ifstream fin(filename);
-    if (!fin.is_open()) {
-        std::cout << "### " << filename << " does not exist! ###\n\n";
-        return false;
-    }
-    
-    std::string header;
-    if (!getline(fin, header)) {
-        fin.close();
-        std::cout << "\n### Get nothing from " << filename<<" ! ###\n\n"; //不知道這次有沒有，我複製上次的
-        return false;
-    }
-    
-    Pokemon pokemon;
-    
-    //我不想寫爆破法，但我想不到，所以我先空白了顆顆顆><
-    int id;
-    std::string name;
-    std::string type1, type2;
-    int total, hp, attack, defense;
-    int sp_atk, sp_def, speed;
-    int generation;
-    bool legendary = true;
-    std::string temp;
-    
-    while (fin >> id) {
-        getline(fin , temp , '\t');
-
-        getline(fin , name , '\t');
-        getline(fin , type1 , '\t');
-        getline(fin , type2 , '\t');
-
-        fin >> total;
-        getline(fin , temp , '\t');
-        fin >> hp;
-        getline(fin , temp , '\t');
-        fin >> defense;
-        getline(fin , temp , '\t');
-        fin >> sp_atk;
-        getline(fin , temp , '\t');
-        fin >> sp_def;
-        getline(fin , temp , '\t');
-        fin >> speed;
-        getline(fin , temp , '\t');
-        fin >> generation;
-        getline(fin , temp , '\t');
-
-        getline(fin , temp , '\t');
-        if(temp == "FALSE") legendary = false;
-
-        Pokemon p(id, name, type1, type2, total, hp, defense, ap_atk, sp_def, speed, generation, legendary);
-        data.push_back(p);
-    }
-    
-    fin.close();
-    return true;
-}
-
 bool Getrange(int &range) {
     std::cout << "Input a non-negative integer: \n";
     std::string num;
@@ -284,7 +229,10 @@ void Tree::Insert(Data data) {
             } else {
                 cur = cur->left;
             }
-        } else { //少了判斷一樣hp的
+        } else if(data.hp == cur->data.hp) {
+            cur->data.id.push_back(data.id);
+            return;
+        } else {
             if (cur->right == nullptr) {
                 cur->right = new Node;
                 cur = cur->right;
@@ -298,6 +246,67 @@ void Tree::Insert(Data data) {
         }
     }
     return;
+}
+
+bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
+    std::ifstream fin(filename);
+    if (!fin.is_open()) {
+        std::cout << "### " << filename << " does not exist! ###\n\n";
+        return false;
+    }
+    
+    std::string header;
+    if (!getline(fin, header)) {
+        fin.close();
+        std::cout << "\n### Get nothing from " << filename<<" ! ###\n\n"; //不知道這次有沒有，我複製上次的
+        return false;
+    }
+    
+    Pokemon pokemon;
+    
+    //我不想寫爆破法，但我想不到，所以我先空白了顆顆顆><
+    int id;
+    std::string name;
+    std::string type1, type2;
+    int total, hp, attack, defense;
+    int sp_atk, sp_def, speed;
+    int generation;
+    bool legendary = true;
+    std::string temp;
+    
+    while (fin >> id) {
+        getline(fin , temp , '\t');
+
+        getline(fin , name , '\t');
+        getline(fin , type1 , '\t');
+        getline(fin , type2 , '\t');
+
+        fin >> total;
+        getline(fin , temp , '\t');
+        fin >> hp;
+        getline(fin , temp , '\t');
+        fin >> defense;
+        getline(fin , temp , '\t');
+        fin >> sp_atk;
+        getline(fin , temp , '\t');
+        fin >> sp_def;
+        getline(fin , temp , '\t');
+        fin >> speed;
+        getline(fin , temp , '\t');
+        fin >> generation;
+        getline(fin , temp , '\t');
+
+        getline(fin , temp , '\t');
+        if(temp == "FALSE") legendary = false;
+
+        Pokemon p(id, name, type1, type2, total, hp, defense, ap_atk, sp_def, speed, generation, legendary);
+        data.push_back(p);
+        Data d(hp, id);
+        Insert(d);
+    }
+    
+    fin.close();
+    return true;
 }
 
 int Tree::CountHeight(Node *node) {
