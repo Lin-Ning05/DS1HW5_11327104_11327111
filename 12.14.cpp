@@ -99,8 +99,7 @@ int main() {
                 if (num == "0") continue;
                 std::string filename = "input" + num + ".txt";
             }
-            
-            //這裡我也沒想，我現在覺得可以寫一個函是去用我的inster把資料插到樹裡面
+            //印全部資料（data的吧好像
         } else if (verb == "2") {
             int low = 0;
             while (!Getrange(low)) {}
@@ -120,8 +119,9 @@ int main() {
             }
             std::cout << "Number of visited nodes = " << searched << std::endl;
         } else if (verb == "3") {
-            //這邊可以用我寫的DeleteNode
-            //我還沒有測試過，我隨便寫點東西而已
+            if (!tree.DeleteNode()) {
+                std::cout << "";//執行任務一，忘了
+            }
         } else if (verb == "4") {
             
         } else {
