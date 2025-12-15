@@ -176,7 +176,44 @@ bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
     Pokemon pokemon;
     
     //我不想寫爆破法，但我想不到，所以我先空白了顆顆顆><
+    int id;
+    std::string name;
+    std::string type1, type2;
+    int total, hp, attack, defense;
+    int sp_atk, sp_def, speed;
+    int generation;
+    bool legendary;
+    std::string temp;
     
+    while (true) {
+        fin >> id;
+        getline(fin , temp , '\t');
+
+        getline(fin , name , '\t');
+        getline(fin , type1 , '\t');
+        getline(fin , type2 , '\t');
+
+        fin >> total;
+        getline(fin , temp , '\t');
+        fin >> hp;
+        getline(fin , temp , '\t');
+        fin >> defense;
+        getline(fin , temp , '\t');
+        fin >> sp_atk;
+        getline(fin , temp , '\t');
+        fin >> sp_def;
+        getline(fin , temp , '\t');
+        fin >> speed;
+        getline(fin , temp , '\t');
+        fin >> generation;
+        getline(fin , temp , '\t');
+
+        getline(fin , temp , '\t');
+        if(temp == "FALSE") legendary = false;
+
+        
+        
+    }
     
     fin.close();
     return true;
@@ -242,7 +279,7 @@ void Tree::Insert(Data data) {
             } else {
                 cur = cur->left;
             }
-        } else {
+        } else { //少了判斷一樣hp的
             if (cur->right == nullptr) {
                 cur->right = new Node;
                 cur = cur->right;
