@@ -11,6 +11,12 @@ struct Pokemon {
     int sp_atk, sp_def, speed;
     int generation;
     bool legendary;
+
+    Pokemon(int id , std::string name , std::string type1 , std::string type2,
+            int total, int hp, int attack, int defense, int sp_atk, int sp_def, int speed,
+            int generation , bool legendary) : id(id) , name(name) , type1(type1) , type2(type),
+            total(total) , hp(hp) , attack(attack) , defense(defense) , sp_atk(sp_atk) , sp_def(sp_def) , speed(speed) , 
+            generation(generation) , legendary(legendary){}
 };
 
 struct Data {
@@ -28,7 +34,6 @@ struct Node {
 void PrintMenu();
 std::string RemoveSpace(std::string target);
 bool IsInt(std::string num);
-bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data);
 bool Getrange(int &range);
 //-------------------宣告-------------------//
 
@@ -59,6 +64,7 @@ class Tree {
     void Insert(Data data);
     bool DeleteNode();
     void RangeSearch(Node* node , int low , int high , std::vector<std::pair<int,int>> &result , int &visited);
+    bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data);
 };
 
 int main() {
@@ -82,7 +88,7 @@ int main() {
             num = RemoveSpace(num);
             if (num == "0") continue;
             std::string filename = "input" + num + ".txt";
-            while (!LoadFromFile(filename , data)) {
+            while (!tree.LoadFromFile(filename , data)) {
                 std::cout << "Input a file number [0: quit]: \n";  
                 std::cin >> num;
                 num = RemoveSpace(num);
@@ -159,7 +165,7 @@ std::string RemoveSpace(std::string target) {
 return to_return;
 }
 
-bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
+bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
     std::ifstream fin(filename);
     if (!fin.is_open()) {
         std::cout << "### " << filename << " does not exist! ###\n\n";
@@ -182,11 +188,10 @@ bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
     int total, hp, attack, defense;
     int sp_atk, sp_def, speed;
     int generation;
-    bool legendary;
+    bool legendary = true;
     std::string temp;
     
-    while (true) {
-        fin >> id;
+    while (fin >> id) {
         getline(fin , temp , '\t');
 
         getline(fin , name , '\t');
@@ -211,8 +216,8 @@ bool LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
         getline(fin , temp , '\t');
         if(temp == "FALSE") legendary = false;
 
-        
-        
+        Pokemon p(id, name, type1, type2, total, hp, defense, ap_atk, sp_def, speed, generation, legendary);
+        data.push_back(p);
     }
     
     fin.close();
