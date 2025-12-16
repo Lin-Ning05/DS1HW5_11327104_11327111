@@ -101,6 +101,9 @@ int main() {
             }
             //印全部資料（data的吧好像
         } else if (verb == "2") {
+            if (!tree.GetRoot()) {
+                //std::cout <<"";執行任務一
+            }
             int low = 0;
             while (!Getrange(low)) {}
             int high = 0;
@@ -115,12 +118,14 @@ int main() {
             if (result.size() == 0) {
                 std::cout << "No record was found in the specified range.\n";
             } else {
-                //印visitedID的內容
+                //印result排序後的內容
             }
             std::cout << "Number of visited nodes = " << searched << std::endl;
         } else if (verb == "3") {
             if (!tree.DeleteNode()) {
                 std::cout << "----- Execute Mission 1 first! -----\n";//執行任務一，忘了
+            } else {
+                std::cout << "" << tree.GetHeight();//要補內容
             }
         } else if (verb == "4") {
             
@@ -296,11 +301,12 @@ bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
         fin >> generation;
         getline(fin , temp , '\t');
 
-        getline(fin , temp , '\t');
+        getline(fin , temp);
         if(temp == "FALSE") legendary = false;
 
         Pokemon p(id, name, type1, type2, total, hp, defense, ap_atk, sp_def, speed, generation, legendary);
         data.push_back(p);
+        //印出來四個欄位
         Data d(hp, id);
         Insert(d);
     }
