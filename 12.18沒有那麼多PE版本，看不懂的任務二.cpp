@@ -86,7 +86,7 @@ class Tree {
     void InOrder(Node* parent, std::vector<Data>& in_order_list);
     Node* Rebuild(std::vector<Data>& in_order_list, int start, int end);
     void Print4();
-    void Print4Level(Node* node, int level, bool first);
+    void Print4Level(Node* node, int level);
     void SetRoot(Node* newroot) {
        root = newroot;
        delete_time = 0;
@@ -117,11 +117,11 @@ int main() {
             if (num == "0") continue;
             std::string filename = "input" + num + ".txt";
             while (!tree.LoadFromFile(filename , data)) {
-                std::cout << "\nInput a file number [0: quit]: ";  
+                std::cout << "\nInput a file number [0: quit]: ";
                 std::cin >> num;
                 num = RemoveSpace(num);
                 if (num == "0") continue;
-                std::string filename = "input" + num + ".txt";
+                filename = "input" + num + ".txt";
             }
             std::cout << "HP tree height = " << tree.GetHeight() << "\n\n"; 
         } 
@@ -168,8 +168,9 @@ int main() {
             std::vector<Data> in_order_list;
             tree.InOrder(tree.GetRoot(), in_order_list);
             tree.SetRoot(tree.Rebuild(in_order_list, 0, in_order_list.size() - 1));
-            std::cout << "\nHP tree:\n\n";
+            std::cout << "\nHP tree:\n";
             tree.Print4();
+            std::cout << std::endl;
         } 
 
         else {
@@ -311,7 +312,7 @@ void Tree::Insert(Data data) {
 bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
     std::ifstream fin(filename);
     if (!fin.is_open()) {
-        std::cout << "### " << filename << " does not exist! ###\n\n";
+        std::cout << "\n### " << filename << " does not exist! ###\n";
         return false;
     }
     
@@ -431,9 +432,9 @@ bool Tree::deleteMax(std::vector<Pokemon> data) {
         }
         Pokemon now_pokemon =  GetPokemon(data, cur->data.id[i]);
         std::cout << "[" << std::right << std::setw(3) << i + 1 <<"]\t";
-        std::cout << now_pokemon.id << "\t" << now_pokemon.name << "\t" << now_pokemon.type1 << "\t" << now_pokemon.total <<"\t";
+        std::cout << now_pokemon.id << "\t" << std::left << std::setw(20) << now_pokemon.name << "\t" << std::left << std::setw(10) << now_pokemon.type1 << "\t" << std::left << std::setw(6) << now_pokemon.total <<"\t";
         std::cout << now_pokemon.hp <<"\t" << now_pokemon.attack << "\t" << now_pokemon.defense << "\t";
-        std::cout << now_pokemon.sp_atk <<"\t" << now_pokemon.sp_def << "\n";
+        std::cout << std::left << std::setw(6) << now_pokemon.sp_atk <<"\t" << now_pokemon.sp_def << "\n";
     }
     if (cur == pre) {
         root = root->left;
@@ -545,22 +546,18 @@ Node* Tree::Rebuild(std::vector<Data>& in_order_list, int start, int end) { // �
 void Tree::Print4() {
     int h = GetHeight(); // 取得重建後的高度
     for (int i = 1; i <= h; i++) {
-        std::cout << "<level "<< i << "> ";
-        bool first = true;
-        Print4Level(root, i, first);
+        std::cout << "<level "<< i << ">";
+        Print4Level(root, i);
         std::cout << std::endl;
     }
 }
 
 // 印出目前階層節點
-void Tree::Print4Level(Node* node, int level, bool first) {
+void Tree::Print4Level(Node* node, int level) {
     if (node == nullptr) return;
 
     if (level == 1) {
-        if (first) {
-            std::cout << " ";
-        }
-        std::cout << "(" << node->data.hp;
+        std::cout << " (" << node->data.hp;
         for (int i = 0; i < node->data.id.size(); i++) {
             if (i == 0) {
                 std::cout << ", " << node->data.id[i];
@@ -571,11 +568,10 @@ void Tree::Print4Level(Node* node, int level, bool first) {
             } 
         }
         std::cout << ")";
-        first = false;
     } 
     
     else if (level > 1) { // 如果要找第二層就要找第一層每個節點的左右子樹的根；第三層就要找第二層每個節點的左右子樹的根 以此類推
-        Print4Level(node->left, level - 1, first);
-        Print4Level(node->right, level - 1, first);
+        Print4Level(node->left, level - 1);
+        Print4Level(node->right, level - 1);
     }
 }
