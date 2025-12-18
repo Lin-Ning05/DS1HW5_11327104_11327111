@@ -86,7 +86,7 @@ class Tree {
     void InOrder(Node* parent, std::vector<Data>& in_order_list);
     Node* Rebuild(std::vector<Data>& in_order_list, int start, int end);
     void Print4();
-    void Print4Level(Node* node, int level);
+    void Print4Level(Node* node, int level, bool first);
     void SetRoot(Node* newroot) {
        root = newroot;
        delete_time = 0;
@@ -546,16 +546,20 @@ void Tree::Print4() {
     int h = GetHeight(); // 取得重建後的高度
     for (int i = 1; i <= h; i++) {
         std::cout << "<level "<< i << "> ";
-        Print4Level(root, i);
+        bool first = true;
+        Print4Level(root, i, first);
         std::cout << std::endl;
     }
 }
 
 // 印出目前階層節點
-void Tree::Print4Level(Node* node, int level) {
+void Tree::Print4Level(Node* node, int level, bool first) {
     if (node == nullptr) return;
 
     if (level == 1) {
+        if (first) {
+            std::cout << " ";
+        }
         std::cout << "(" << node->data.hp;
         for (int i = 0; i < node->data.id.size(); i++) {
             if (i == 0) {
@@ -566,11 +570,12 @@ void Tree::Print4Level(Node* node, int level) {
                 std::cout << "|" << node->data.id[i];
             } 
         }
-        std::cout << ") ";
+        std::cout << ")";
+        first = false;
     } 
     
     else if (level > 1) { // 如果要找第二層就要找第一層每個節點的左右子樹的根；第三層就要找第二層每個節點的左右子樹的根 以此類推
-        Print4Level(node->left, level - 1);
-        Print4Level(node->right, level - 1);
+        Print4Level(node->left, level - 1, first);
+        Print4Level(node->right, level - 1, first);
     }
 }
