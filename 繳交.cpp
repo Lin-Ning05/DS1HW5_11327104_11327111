@@ -224,6 +224,25 @@ std::string RemoveSpace(std::string target) {
 return to_return;
 }
 
+std::string RemoveDotTab(std::string target) {
+    std::string to_return;
+    for (int i = 0 ; i < target.size() ; i++) {
+        if (target[i] == '.' || target[i] == '\t' || target[i] == ' ') {
+            break;
+        }
+        to_return = to_return + target[i];
+    }
+    return to_return;
+}
+
+void GetN(std::string temp , int &n) {
+    temp = RemoveDotTab(temp);
+    temp = RemoveSpace(temp);
+    if (IsInt(temp)) {
+        n = stoi(temp);
+    }
+}
+
 void Sort(std::vector<std::pair<int,int>> &result) {
    int size = result.size();
     for (int i = 0; i < size - 1; i++) {
@@ -331,38 +350,48 @@ bool Tree::LoadFromFile(std::string &filename , std::vector<Pokemon> &data) {
     
     Pokemon pokemon;
     
-    int id;
+    int id = 0;
     std::string name;
     std::string type1, type2;
-    int total, hp, attack, defense;
-    int sp_atk, sp_def, speed;
-    int generation;
+    int total = 0, hp = 0 , attack = 0 , defense = 0;
+    int sp_atk = 0, sp_def = 0, speed = 0;
+    int generation = 0;
     bool legendary = true;
     std::string temp;
     int number = 1;
-    while (fin >> id) {
-        getline(fin , temp , '\t');
+    while (true) {
+        if (!getline(fin , temp , '\t')) {
+            break;
+        }
+        GetN(temp , id);
 
         getline(fin , name , '\t');
         getline(fin , type1 , '\t');
         getline(fin , type2 , '\t');
 
-        fin >> total;
         getline(fin , temp , '\t');
-        fin >> hp;
+        GetN(temp , total);
+
         getline(fin , temp , '\t');
-        fin >> attack;
+        GetN(temp , hp);
+
         getline(fin , temp , '\t');
-        fin >> defense;
+        GetN(temp , attack);
+
         getline(fin , temp , '\t');
-        fin >> sp_atk;
+        GetN(temp , defense);
+
         getline(fin , temp , '\t');
-        fin >> sp_def;
+        GetN(temp , sp_atk);
+
         getline(fin , temp , '\t');
-        fin >> speed;
+        GetN(temp , sp_def);
+
         getline(fin , temp , '\t');
-        fin >> generation;
+        GetN(temp , speed);
+
         getline(fin , temp , '\t');
+        GetN(temp , generation);
 
         getline(fin , temp);
         if(temp == "FALSE") legendary = false;
