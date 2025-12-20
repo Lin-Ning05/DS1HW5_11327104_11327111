@@ -401,7 +401,7 @@ int Tree::CountHeight(Node *node) {
 
 bool Tree::deleteMin(std::vector<Pokemon> data) {
     if (!root) return false;
-    Node *cur = root , *pre = nullptr;
+    Node *cur = root , *pre = root;
     while (cur->left) {
         pre = cur;
         cur = cur->left;
@@ -498,11 +498,11 @@ void Tree::RangeSearch(Node* node , int low , int high , std::vector<std::pair<i
         }
     }
 
-    if (node->data.hp >= low) {
+    if (node->data.hp > low) {
         RangeSearch(node->left, low, high, result, visited);
     }
 
-    if (node->data.hp <= high) {
+    if (node->data.hp < high) {
         RangeSearch(node->right, low, high, result, visited);
     }
     return;
